@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ColorShop - Moda Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" as="style">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="reset.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--text:#000;--gray:#666;--border:#e5e5e5;--light:#f9fafb;--primary:rgb(201,20,20)}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(229,229,229,0.3);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);transition:all .3s}
+.promo-banner{background:var(--primary);color:#fff;text-align:center;padding:12px 20px;font-size:13px;font-weight:600;letter-spacing:.5px;position:relative;overflow:hidden}
+.promo-text{display:inline-block;animation:slideText 20s linear infinite}
+@keyframes slideText{0%,100%{transform:translateX(0)}50%{transform:translateX(-10px)}}
+.promo-edit{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:11px;transition:all .3s;display:none}
+.promo-edit:hover{background:rgba(255,255,255,.3)}
+.promo-edit.show{display:block}
+.header-main{display:flex;justify-content:space-between;align-items:center;padding:16px 5vw;max-width:1600px;margin:0 auto}
+.logo{font-size:20px;font-weight:900;letter-spacing:-1px;display:flex;align-items:center;gap:8px}
+.nav{display:flex;gap:2rem}
+.nav a{color:var(--text);text-decoration:none;font-weight:600;font-size:13px;transition:opacity .3s;text-transform:uppercase;letter-spacing:.5px}
+.nav a:hover{opacity:.6}
+.header-actions{display:flex;gap:10px;align-items:center}
+.badge{background:var(--text);color:#fff;padding:4px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;display:none}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;font-size:15px}
+.icon-btn:hover{background:var(--text);color:#fff;transform:translateY(-2px)}
+
+/* Hero */
+.hero{margin-top:30px;position:relative;height:100vh; width: 100vw; min-height:600px;overflow:hidden; padding: 0px;}
+.hero-slider{position:relative;width:100%;height:100%}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1s;background-size:cover;background-position:center}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.4),transparent 60%);display:flex;align-items:center;padding:0 7vw}
+.hero-content{max-width:550px;color:#fff;animation:fadeInUp 1s}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.hero-tag{display:inline-block;padding:8px 20px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
+.hero-title{font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.1;margin-bottom:20px;letter-spacing:-2px}
+.hero-desc{font-size:16px;line-height:1.6;margin-bottom:32px;opacity:.95}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{padding:14px 32px;border:none;border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;transition:all .3s;font-family:inherit;text-transform:uppercase;letter-spacing:.8px;display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(201,20,20,.4)}
+.btn-outline{background:transparent;color:#fff;border:2px solid #fff}
+.btn-outline:hover{background:#fff;color:var(--text)}
+.hero-arrows{position:absolute;bottom:40px;right:5vw;display:flex;gap:12px;z-index:10}
+.arrow-btn{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .3s}
+.arrow-btn:hover{background:#fff;transform:scale(1.1)}
+
+/* Section */
+section{padding:60px 2vw;max-width:1600px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:60px}
+.section-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+.section-subtitle{font-size:15px;color:var(--gray);line-height:1.6;max-width:600px;margin:0 auto}
+.admin-edit{display:inline-flex;align-items:center;gap:8px;background:var(--light);border:1px solid var(--border);padding:8px 16px;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;margin-top:16px;transition:all .3s;display:none}
+.admin-edit:hover{background:var(--text);color:#fff}
+.admin-edit.show{display:inline-flex}
+
+/* Products Grid */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;margin-top:40px}
+.product-card{position:relative;cursor:pointer;transition:all .4s;border-radius:12px;overflow:hidden;background:var(--light)}
+.product-card:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(0,0,0,.12)}
+.product-img{width:100%;aspect-ratio:3/4;background:var(--light);position:relative;overflow:hidden}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.product-card:hover .product-img img{transform:scale(1.05)}
+.product-tag{position:absolute;top:16px;left:16px;background:var(--text);color:#fff;padding:6px 14px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.product-info{padding:20px}
+.product-name{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+.product-desc{font-size:14px;color:var(--gray);margin-bottom:16px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.product-footer{display:flex;justify-content:space-between;align-items:center}
+.product-price{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.btn-small{padding:10px 20px;font-size:11px}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* Cards 50% */
+.split-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px}
+.feature-card{position:relative;height:500px;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .4s}
+.feature-card:hover{transform:scale(1.02);box-shadow:0 20px 50px rgba(0,0,0,.15)}
+.feature-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.feature-card:hover img{transform:scale(1.05)}
+.feature-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),transparent 60%);display:flex;flex-direction:column;justify-content:flex-end;padding:40px;color:#fff}
+.feature-icon{width:60px;height:60px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px}
+.feature-title{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:12px}
+.feature-desc{font-size:14px;line-height:1.6;opacity:.9;margin-bottom:24px}
+
+/* Palettes */
+.palette-section{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}
+.palette-card{position:relative;cursor:pointer;transition:all .4s;border-radius:12px;overflow:hidden;background:var(--light)}
+.palette-card:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(0,0,0,.12)}
+.palette-swatch{width:100%;height:280px;transition:height .3s}
+.palette-card:hover .palette-swatch{height:300px}
+.palette-info{padding:20px;text-align:center}
+.palette-name{font-size:16px;font-weight:700;margin-bottom:6px}
+.palette-hex{font-size:12px;color:var(--gray);font-family:monospace}
+.palette-cta{text-align:center;margin-top:40px}
+
+/* Blog */
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px;margin-top:40px}
+.blog-card{cursor:pointer;transition:all .4s;border-radius:12px;overflow:hidden;background:var(--light)}
+.blog-card:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(0,0,0,.12)}
+.blog-img{width:100%;aspect-ratio:16/10;background:var(--light);overflow:hidden}
+.blog-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.blog-card:hover .blog-img img{transform:scale(1.05)}
+.blog-info{padding:24px}
+.blog-meta{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:12px}
+.blog-title{font-size:19px;font-weight:700;margin-bottom:12px;line-height:1.3;letter-spacing:-.5px}
+.blog-excerpt{font-size:14px;color:var(--gray);line-height:1.6}
+
+/* Newsletter */
+.newsletter{background:var(--text);border-radius:12px;padding:80px 60px;text-align:center;color:#fff;margin-top:40px}
+.newsletter h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+.newsletter p{font-size:15px;margin-bottom:32px;opacity:.9;max-width:500px;margin-left:auto;margin-right:auto}
+.newsletter-form{display:flex;gap:12px;max-width:500px;margin:0 auto}
+.newsletter-input{flex:1;padding:14px 24px;border:2px solid rgba(255,255,255,.2);border-radius:50px;font-size:13px;background:rgba(255,255,255,.1);color:#fff;font-family:inherit;font-weight:500}
+.newsletter-input::placeholder{color:rgba(255,255,255,.6)}
+.newsletter-input:focus{outline:none;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.15)}
+.newsletter-btn{padding:14px 32px;background:#fff;color:var(--text);border:none;border-radius:50px;font-weight:700;cursor:pointer;transition:all .3s;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+.newsletter-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.3)}
+
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
+.modal.active{display:flex;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--bg);border-radius:12px;padding:40px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;animation:modalUp .4s;position:relative}
+@keyframes modalUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+.modal-title{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--gray);padding:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .3s}
+.modal-close:hover{background:var(--light);color:var(--text)}
+.form-group{margin-bottom:20px}
+.label{display:block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.input{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;background:var(--light);transition:all .3s;font-weight:500}
+.input:focus{outline:none;border-color:var(--text);background:var(--bg);box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+.textarea{width:100%;min-height:100px;resize:vertical}
+.selector-grid{display:grid;gap:16px;max-height:400px;overflow-y:auto}
+.selector-item{display:flex;gap:16px;padding:16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .3s;align-items:center}
+.selector-item:hover{border-color:var(--text);background:var(--light)}
+.selector-item.selected{border-color:var(--text);background:var(--light)}
+.selector-img{width:80px;height:80px;border-radius:8px;object-fit:cover;background:var(--light)}
+.selector-info{flex:1}
+.selector-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.selector-desc{font-size:13px;color:var(--gray)}
+.selector-check{width:24px;height:24px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.selector-item.selected .selector-check{background:var(--text);border-color:var(--text);color:#fff;font-size:12px}
+
+/* Cookie Banner */
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;background:var(--text);color:#fff;padding:24px 5vw;z-index:9999;display:none;animation:slideUp .5s;box-shadow:0 -4px 20px rgba(0,0,0,.2)}
+.cookie-banner.show{display:block}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.cookie-content{max-width:1400px;margin:0 auto;text-align:center}
+.cookie-text{margin-bottom:20px}
+.cookie-text h3{font-size:16px;font-weight:700;margin-bottom:8px}
+.cookie-text p{font-size:14px;opacity:.9;line-height:1.5}
+.cookie-actions{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
+.cookie-btn{padding:10px 24px;border:none;border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;transition:all .3s;font-family:inherit;text-transform:uppercase;letter-spacing:.8px}
+.cookie-accept{background:#fff;color:var(--text)}
+.cookie-accept:hover{transform:scale(1.05)}
+.cookie-decline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3)}
+.cookie-decline:hover{border-color:#fff}
+
+/* Location Modal */
+.location-modal .modal-box{max-width:450px}
+.location-icon{width:80px;height:80px;background:linear-gradient(135deg,var(--primary),#cc0000);color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 24px;border-radius:50%;box-shadow:0 8px 24px rgba(201,20,20,.3)}
+.modal-desc{font-size:14px;color:var(--gray);line-height:1.6;margin-bottom:24px;text-align:center}
+
+@media(max-width:1024px){
+.nav{display:none}
+.split-cards,.palette-section{grid-template-columns:1fr}
+.newsletter-form{flex-direction:column}
+}
+@media(max-width:768px){
+section{padding:60px 20px}
+.header-main{padding:12px 20px}
+.products-grid,.blog-grid{grid-template-columns:1fr}
+.hero{height:70vh;margin-top:106px}
+.hero-content{padding:20px}
+.hero-overlay{padding: 0 5vw}
+.modal-box{padding:24px}
+.newsletter{padding:40px 24px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+<div class="promo-banner">
+<span class="promo-text" id="promoText">FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 299 | USE O CUPOM: BEMVINDO</span>
+<span class="promo-edit" id="promoEdit" onclick="openPromoModal()"><i class="fas fa-edit"></i> Editar</span>
+</div>
+<div class="header-main">
+<div class="logo"><i class="fas fa-store"></i>COLORSHOP</div>
+<nav class="nav">
+<a href="#products">Produtos</a>
+<a href="#palettes">Paletas</a>
+<a href="#blog">Blog</a>
+<a href="stores.html">Lojas</a>
+</nav>
+<div class="header-actions">
+<span class="badge" id="adminBadge">ADMIN</span>
+<button class="icon-btn" onclick="window.open('https://wa.me/5511914549161','_blank')" title="WhatsApp"><i class="fab fa-whatsapp"></i></button>
+<button class="icon-btn" onclick="window.location.href='profile.html'" title="Perfil"><i class="fas fa-user"></i></button>
+</div>
+</div>
+</header>
+
+<section class="hero">
+<div class="hero-slider" id="heroSlider">
+<div class="hero-slide active">
+<img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop" alt="Fashion 1" loading="eager">
+<div class="hero-overlay">
+<div class="hero-content">
+<div class="hero-tag">Nova Coleção 2025</div>
+<h1 class="hero-title">Vista Sua Essência</h1>
+<p class="hero-desc">Peças únicas que celebram sua individualidade. Design atemporal com qualidade excepcional.</p>
+<div class="hero-btns">
+<a href="#products" class="btn btn-primary">Explorar Agora<i class="fas fa-arrow-right"></i></a>
+<a href="stores.html" class="btn btn-outline">Nossas Lojas<i class="fas fa-map-marker-alt"></i></a>
+</div>
+</div>
+</div>
+</div>
+<div class="hero-slide">
+<img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1920&h=1080&fit=crop" alt="Fashion 2" loading="lazy">
+<div class="hero-overlay">
+<div class="hero-content">
+<div class="hero-tag">Personalização</div>
+<h1 class="hero-title">Criado Para Você</h1>
+<p class="hero-desc">Cada detalhe pensado para refletir seu estilo único. Sob medida, do seu jeito.</p>
+<div class="hero-btns">
+<a href="personalize.html" class="btn btn-primary">Personalizar<i class="fas fa-magic"></i></a>
+<a href="#palettes" class="btn btn-outline">Ver Paletas<i class="fas fa-palette"></i></a>
+</div>
+</div>
+</div>
+</div>
+<div class="hero-slide">
+<img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1920&h=1080&fit=crop" alt="Fashion 3" loading="lazy">
+<div class="hero-overlay">
+<div class="hero-content">
+<div class="hero-tag">Exclusividade</div>
+<h1 class="hero-title">Elegância Premium</h1>
+<p class="hero-desc">Tecidos nobres e acabamentos impecáveis. Moda que transcende tendências.</p>
+<div class="hero-btns">
+<a href="products.html" class="btn btn-primary">Ver Produtos<i class="fas fa-shopping-bag"></i></a>
+<a href="#blog" class="btn btn-outline">Inspiração<i class="fas fa-heart"></i></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hero-arrows">
+<button class="arrow-btn" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+<button class="arrow-btn" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+</div>
+</section>
+
+<section id="products">
+<div class="section-header">
+<div class="section-tag">Seleção Especial</div>
+<h2 class="section-title">Roupas Recomendadas</h2>
+<p class="section-subtitle">Peças cuidadosamente selecionadas para você</p>
+<button class="admin-edit" id="adminProductEdit" onclick="openProductSelector()"><i class="fas fa-edit"></i>Selecionar Produtos</button>
+</div>
+<div class="products-grid" id="productsGrid">
+<div class="product-card"><div class="product-img skeleton"></div></div>
+<div class="product-card"><div class="product-img skeleton"></div></div>
+<div class="product-card"><div class="product-img skeleton"></div></div>
+<div class="product-card"><div class="product-img skeleton"></div></div>
+</div>
+</section>
+
+<section>
+<div class="split-cards">
+<div class="feature-card" onclick="window.open('https://instagram.com/colorshop','_blank')">
+<img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1000&fit=crop" alt="Instagram" loading="lazy">
+<div class="feature-overlay">
+<div class="feature-icon"><i class="fab fa-instagram"></i></div>
+<h3 class="feature-title">Siga-nos no Instagram</h3>
+<p class="feature-desc">Fique por dentro das novidades, looks do dia e inspirações de moda. Marque @colorshop nas suas fotos!</p>
+<span class="btn btn-outline btn-small">Seguir Agora<i class="fas fa-external-link-alt"></i></span>
+</div>
+</div>
+<div class="feature-card" onclick="window.location.href='products.html'">
+<img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=1000&fit=crop" alt="Produtos" loading="lazy">
+<div class="feature-overlay">
+<div class="feature-icon"><i class="fas fa-shopping-bag"></i></div>
+<h3 class="feature-title">Todos os Produtos</h3>
+<p class="feature-desc">Explore nossa coleção completa. Vestidos, blusas, saias e acessórios exclusivos.</p>
+<span class="btn btn-outline btn-small">Ver Catálogo<i class="fas fa-arrow-right"></i></span>
+</div>
+</div>
+</div>
+</section>
+
+<section id="palettes" style="background:var(--light)">
+<div class="section-header">
+<div class="section-tag">Paleta de Cores</div>
+<h2 class="section-title">Tons Exclusivos</h2>
+<p class="section-subtitle">Cores cuidadosamente selecionadas para criar looks perfeitos</p>
+<button class="admin-edit" id="adminPaletteEdit" onclick="openPaletteSelector()"><i class="fas fa-edit"></i>Selecionar Paletas</button>
+</div>
+<div class="palette-section" id="palettesGrid">
+<div class="palette-card"><div class="palette-swatch skeleton"></div></div>
+<div class="palette-card"><div class="palette-swatch skeleton"></div></div>
+<div class="palette-card"><div class="palette-swatch skeleton"></div></div>
+<div class="palette-card"><div class="palette-swatch skeleton"></div></div>
+</div>
+<div class="palette-cta">
+<button class="btn btn-primary" onclick="window.location.href='palette.html'">Ver Todas as Paletas<i class="fas fa-palette"></i></button>
+</div>
+</section>
+
+<section>
+<div class="split-cards">
+<div class="feature-card" onclick="window.location.href='personalize.html'">
+<img src="https://images.unsplash.com/photo-1558769132-cb1aea3c6e86?w=800&h=1000&fit=crop" alt="Personalização" loading="lazy">
+<div class="feature-overlay">
+<div class="feature-icon"><i class="fas fa-magic"></i></div>
+<h3 class="feature-title">Personalize</h3>
+<p class="feature-desc">Crie peças sob medida com seu estilo. Escolha tecidos, cores e acabamentos premium.</p>
+<span class="btn btn-outline btn-small">Começar<i class="fas fa-arrow-right"></i></span>
+</div>
+</div>
+<div class="feature-card" onclick="window.location.href='lookbook.html'">
+<img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&h=1000&fit=crop" alt="Lookbook" loading="lazy">
+<div class="feature-overlay">
+<div class="feature-icon"><i class="fas fa-book-open"></i></div>
+<h3 class="feature-title">Lookbook</h3>
+<p class="feature-desc">Explore nosso catálogo de peças sob medida. Inspirações e criações exclusivas.</p>
+<span class="btn btn-outline btn-small">Ver Lookbook<i class="fas fa-arrow-right"></i></span>
+</div>
+</div>
+</div>
+</section>
+
+<section id="blog" style="background:var(--light)">
+<div class="section-header">
+<div class="section-tag">Inspiração</div>
+<h2 class="section-title">Blog & Novidades</h2>
+<p class="section-subtitle">Dicas de moda, tendências e muito mais</p>
+</div>
+<div class="blog-grid">
+<div class="blog-card" onclick="window.location.href='blog.html'">
+<div class="blog-img">
+<img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&h=400&fit=crop" alt="Blog" loading="lazy">
+</div>
+<div class="blog-info">
+<div class="blog-meta">15 Dez 2025 • Moda</div>
+<h3 class="blog-title">Como Criar um Guarda-Roupa Cápsula</h3>
+<p class="blog-excerpt">Descubra como montar um guarda-roupa versátil e atemporal com peças essenciais.</p>
+</div>
+</div>
+<div class="blog-card" onclick="window.location.href='blog.html'">
+<div class="blog-img">
+<img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=400&fit=crop" alt="Blog" loading="lazy">
+</div>
+<div class="blog-info">
+<div class="blog-meta">12 Dez 2025 • Estilo</div>
+<h3 class="blog-title">Tendências de Verão 2025</h3>
+<p class="blog-excerpt">Conheça as principais tendências da estação e como incorporá-las ao seu estilo.</p>
+</div>
+</div>
+<div class="blog-card" onclick="window.location.href='blog.html'">
+<div class="blog-img">
+<img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=400&fit=crop" alt="Blog" loading="lazy">
+</div>
+<div class="blog-info">
+<div class="blog-meta">08 Dez 2025 • Dicas</div>
+<h3 class="blog-title">Cuidados com Tecidos Premium</h3>
+<p class="blog-excerpt">Aprenda a manter suas peças especiais sempre impecáveis e duradouras.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="newsletter">
+<h2>Fique por Dentro</h2>
+<p>Receba em primeira mão lançamentos, promoções exclusivas e conteúdo sobre moda e estilo.</p>
+<form class="newsletter-form" id="newsletterForm">
+<input type="email" class="newsletter-input" placeholder="Seu melhor e-mail" required>
+<button type="submit" class="newsletter-btn">Inscrever</button>
+</form>
+</div>
+</section>
+
+<!-- Cookie Banner -->
+<div class="cookie-banner" id="cookieBanner">
+<div class="cookie-content">
+<div class="cookie-text">
+<h3>🍪 Usamos Cookies</h3>
+<p>Utilizamos cookies para melhorar sua experiência no site. Ao continuar navegando, você concorda com nossos termos.</p>
+</div>
+<div class="cookie-actions">
+<button class="cookie-btn cookie-accept" onclick="acceptCookies()">Aceitar</button>
+<button class="cookie-btn cookie-decline" onclick="declineCookies()">Recusar</button>
+</div>
+</div>
+</div>
+
+<!-- Location Modal -->
+<div class="modal location-modal" id="locationModal">
+<div class="modal-box">
+<div class="modal-header">
+<h3 class="modal-title">Personalize Sua Experiência</h3>
+<button class="modal-close" onclick="closeLocationModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="location-icon"><i class="fas fa-map-marker-alt"></i></div>
+<p class="modal-desc">Informe sua localização para receber ofertas personalizadas, calcular frete e encontrar a loja mais próxima.</p>
+<form id="locationForm">
+<div class="form-group">
+<label class="label">Cidade</label>
+<input type="text" class="input" id="cityInput" placeholder="Ex: São Paulo" required>
+</div>
+<div class="form-group">
+<label class="label">Estado</label>
+<input type="text" class="input" id="stateInput" placeholder="Ex: SP" required maxlength="2">
+</div>
+<button type="submit" class="btn btn-primary" style="width:100%">Salvar Localização<i class="fas fa-check"></i></button>
+<button type="button" class="btn btn-outline" style="width:100%;margin-top:12px" onclick="skipLocation()">Pular por Agora</button>
+</form>
+</div>
+</div>
+
+<!-- Promo Edit Modal -->
+<div class="modal" id="promoModal">
+<div class="modal-box">
+<div class="modal-header">
+<h3 class="modal-title">Editar Banner Promocional</h3>
+<button class="modal-close" onclick="closePromoModal()"><i class="fas fa-times"></i></button>
+</div>
+<form id="promoForm">
+<div class="form-group">
+<label class="label">Texto Promocional</label>
+<textarea class="input textarea" id="promoTextInput" placeholder="Ex: FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 299" required></textarea>
+</div>
+<button type="submit" class="btn btn-primary" style="width:100%">Salvar Alterações<i class="fas fa-check"></i></button>
+</form>
+</div>
+</div>
+
+<!-- Product Selector Modal -->
+<div class="modal" id="productModal">
+<div class="modal-box">
+<div class="modal-header">
+<h3 class="modal-title">Selecionar Produtos Recomendados</h3>
+<button class="modal-close" onclick="closeProductModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="selector-grid" id="productSelector"></div>
+<div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end">
+<button class="btn btn-outline" onclick="closeProductModal()">Cancelar</button>
+<button class="btn btn-primary" onclick="saveProducts()">Salvar Seleção</button>
+</div>
+</div>
+</div>
+
+<!-- Palette Selector Modal -->
+<div class="modal" id="paletteModal">
+<div class="modal-box">
+<div class="modal-header">
+<h3 class="modal-title">Selecionar Paletas em Destaque</h3>
+<button class="modal-close" onclick="closePaletteModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="selector-grid" id="paletteSelector"></div>
+<div style="margin-top:24px;display:flex;gap:12px;justify-content:flex-end">
+<button class="btn btn-outline" onclick="closePaletteModal()">Cancelar</button>
+<button class="btn btn-primary" onclick="savePalettes()">Salvar Seleção</button>
+</div>
+</div>
+</div>
+
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import{getFirestore,collection,getDocs,doc,getDoc,setDoc,updateDoc}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import{getAuth,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+const app=initializeApp({apiKey:"AIzaSyCLJ5jo4JknJAe9OlH10EawYEvqjJGnvKg",authDomain:"myfrancashop.firebaseapp.com",projectId:"myfrancashop",storageBucket:"myfrancashop.firebasestorage.app",messagingSenderId:"935759870053",appId:"1:935759870053:web:aabe4af138691d021bee8c"});
+
+const db=getFirestore(app);
+const auth=getAuth(app);
+let isAdmin=false;
+let currentSlide=0;
+let slideInterval;
+let allProducts=[];
+let allPalettes=[];
+let selectedProducts=[];
+let selectedPalettes=[];
+
+// Hero Slider
+function startSlider(){
+slideInterval=setInterval(()=>{
+currentSlide=(currentSlide+1)%3;
+updateSlide();
+},20000);
+}
+
+function updateSlide(){
+document.querySelectorAll('.hero-slide').forEach((s,i)=>{
+s.classList.toggle('active',i===currentSlide);
+});
+}
+
+window.nextSlide=()=>{
+currentSlide=(currentSlide+1)%3;
+updateSlide();
+clearInterval(slideInterval);
+startSlider();
+};
+
+window.prevSlide=()=>{
+currentSlide=(currentSlide-1+3)%3;
+updateSlide();
+clearInterval(slideInterval);
+startSlider();
+};
+
+// Cookie Banner
+window.addEventListener('DOMContentLoaded',()=>{
+const consent=localStorage.getItem('cookieConsent');
+if(!consent){
+document.getElementById('cookieBanner').classList.add('show');
+}else if(consent==='accepted'){
+checkLocation();
+}
+loadPromoText();
+startSlider();
+});
+
+window.acceptCookies=()=>{
+localStorage.setItem('cookieConsent','accepted');
+document.getElementById('cookieBanner').classList.remove('show');
+checkLocation();
+};
+
+window.declineCookies=()=>{
+localStorage.setItem('cookieConsent','declined');
+document.getElementById('cookieBanner').classList.remove('show');
+};
+
+function checkLocation(){
+const hasLocation=localStorage.getItem('userCity')&&localStorage.getItem('userState');
+if(!hasLocation){
+setTimeout(()=>document.getElementById('locationModal').classList.add('active'),1000);
+}
+}
+
+window.closeLocationModal=()=>document.getElementById('locationModal').classList.remove('active');
+
+window.skipLocation=()=>{
+localStorage.setItem('locationSkipped','true');
+closeLocationModal();
+};
+
+document.getElementById('locationForm').addEventListener('submit',(e)=>{
+e.preventDefault();
+const city=document.getElementById('cityInput').value.trim();
+const state=document.getElementById('stateInput').value.trim().toUpperCase();
+if(city&&state){
+localStorage.setItem('userCity',city);
+localStorage.setItem('userState',state);
+alert(`✓ Localização salva: ${city}, ${state}`);
+closeLocationModal();
+}
+});
+
+// Promo Banner
+async function loadPromoText(){
+try{
+const doc=await getDoc(doc(db,'settings','promoBanner'));
+if(doc.exists()&&doc.data().text){
+document.getElementById('promoText').textContent=doc.data().text;
+}
+}catch(e){console.error('Erro:',e)}
+}
+
+window.openPromoModal=()=>{
+if(!isAdmin)return alert('Apenas administradores podem editar.');
+const currentText=document.getElementById('promoText').textContent;
+document.getElementById('promoTextInput').value=currentText;
+document.getElementById('promoModal').classList.add('active');
+};
+
+window.closePromoModal=()=>document.getElementById('promoModal').classList.remove('active');
+
+document.getElementById('promoForm').addEventListener('submit',async(e)=>{
+e.preventDefault();
+const text=document.getElementById('promoTextInput').value.trim();
+if(!text)return alert('Digite um texto válido.');
+try{
+await setDoc(doc(db,'settings','promoBanner'),{text,updatedAt:new Date()});
+document.getElementById('promoText').textContent=text;
+alert('✓ Banner atualizado com sucesso!');
+closePromoModal();
+}catch(e){
+console.error('Erro:',e);
+alert('Erro ao salvar. Tente novamente.');
+}
+});
+
+// Auth
+onAuthStateChanged(auth,async(user)=>{
+if(user){
+try{
+const adminDoc=await getDoc(doc(db,'admins',user.uid));
+isAdmin=adminDoc.exists();
+if(isAdmin){
+document.getElementById('adminBadge').style.display='block';
+document.getElementById('promoEdit').classList.add('show');
+document.getElementById('adminProductEdit').classList.add('show');
+document.getElementById('adminPaletteEdit').classList.add('show');
+}
+}catch(e){console.error('Erro admin:',e)}
+}
+loadProducts();
+loadPalettes();
+});
+
+// Products
+async function loadProducts(){
+const grid=document.getElementById('productsGrid');
+try{
+const featDoc=await getDoc(doc(db,'settings','featuredProducts'));
+let ids=[];
+if(featDoc.exists()&&featDoc.data().products)ids=featDoc.data().products;
+
+grid.innerHTML='';
+if(ids.length===0){
+const snap=await getDocs(collection(db,'products'));
+const prods=[];
+snap.forEach(d=>prods.push({id:d.id,...d.data()}));
+prods.slice(0,4).forEach(p=>grid.appendChild(createProductCard(p)));
+if(prods.length===0)grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#666;padding:60px">Nenhum produto disponível</p>';
+}else{
+const proms=ids.slice(0,4).map(id=>getDoc(doc(db,'products',id)));
+const docs=await Promise.all(proms);
+let count=0;
+docs.forEach(d=>{if(d.exists()){count++;grid.appendChild(createProductCard({id:d.id,...d.data()}))}});
+if(count===0)grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#666;padding:60px">Selecione produtos para exibir</p>';
+}
+}catch(e){
+console.error('Erro:',e);
+grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#f00;padding:60px">Erro ao carregar produtos</p>';
+}
+}
+
+function createProductCard(p){
+const c=document.createElement('div');
+c.className='product-card';
+c.onclick=()=>window.location.href=`product.html?id=${p.id}`;
+const tag=p.tag?`<div class="product-tag">${p.tag}</div>`:'';
+const hasImg=p.images&&p.images[0];
+const img=hasImg?`<img src="${p.images[0]}" alt="${p.name||'Produto'}" loading="lazy">`:'';
+c.innerHTML=`<div class="product-img">${tag}${img}</div><div class="product-info"><div class="product-name">${p.name||'Produto'}</div><div class="product-desc">${p.description||'Descrição do produto'}</div><div class="product-footer"><div class="product-price">${formatPrice(p.price)}</div><button class="btn btn-primary btn-small" onclick="event.stopPropagation();window.location.href='product.html?id=${p.id}'">Ver Mais</button></div></div>`;
+return c;
+}
+
+window.openProductSelector=async()=>{
+if(!isAdmin)return alert('Apenas administradores podem editar.');
+const snap=await getDocs(collection(db,'products'));
+allProducts=[];
+snap.forEach(d=>allProducts.push({id:d.id,...d.data()}));
+const featDoc=await getDoc(doc(db,'settings','featuredProducts'));
+selectedProducts=featDoc.exists()&&featDoc.data().products?featDoc.data().products:[];
+const sel=document.getElementById('productSelector');
+sel.innerHTML='';
+allProducts.forEach(p=>{
+const isSelected=selectedProducts.includes(p.id);
+const item=document.createElement('div');
+item.className=`selector-item${isSelected?' selected':''}`;
+item.onclick=()=>toggleProduct(p.id,item);
+const img=p.images&&p.images[0]?`<img src="${p.images[0]}" class="selector-img" alt="${p.name}">`:`<div class="selector-img" style="display:flex;align-items:center;justify-content:center"><i class="fas fa-box"></i></div>`;
+item.innerHTML=`${img}<div class="selector-info"><div class="selector-name">${p.name||'Produto'}</div><div class="selector-desc">${p.description||''}</div></div><div class="selector-check">${isSelected?'<i class="fas fa-check"></i>':''}</div>`;
+sel.appendChild(item);
+});
+document.getElementById('productModal').classList.add('active');
+};
+
+window.toggleProduct=(id,el)=>{
+const idx=selectedProducts.indexOf(id);
+if(idx>-1){
+selectedProducts.splice(idx,1);
+el.classList.remove('selected');
+el.querySelector('.selector-check').innerHTML='';
+}else{
+if(selectedProducts.length>=4)return alert('Você pode selecionar no máximo 4 produtos.');
+selectedProducts.push(id);
+el.classList.add('selected');
+el.querySelector('.selector-check').innerHTML='<i class="fas fa-check"></i>';
+}
+};
+
+window.saveProducts=async()=>{
+try{
+await setDoc(doc(db,'settings','featuredProducts'),{products:selectedProducts,updatedAt:new Date()});
+alert('✓ Produtos atualizados com sucesso!');
+closeProductModal();
+loadProducts();
+}catch(e){
+console.error('Erro:',e);
+alert('Erro ao salvar. Tente novamente.');
+}
+};
+
+window.closeProductModal=()=>document.getElementById('productModal').classList.remove('active');
+
+// Palettes
+async function loadPalettes(){
+const grid=document.getElementById('palettesGrid');
+try{
+const featDoc=await getDoc(doc(db,'settings','featuredPalettes'));
+let ids=[];
+if(featDoc.exists()&&featDoc.data().palettes)ids=featDoc.data().palettes;
+
+grid.innerHTML='';
+if(ids.length===0){
+const snap=await getDocs(collection(db,'colorPalettes'));
+const pals=[];
+snap.forEach(d=>pals.push({id:d.id,...d.data()}));
+pals.slice(0,4).forEach(p=>grid.appendChild(createPaletteCard(p)));
+if(pals.length===0)grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#666;padding:60px">Nenhuma paleta disponível</p>';
+}else{
+const proms=ids.slice(0,4).map(id=>getDoc(doc(db,'colorPalettes',id)));
+const docs=await Promise.all(proms);
+let count=0;
+docs.forEach(d=>{if(d.exists()){count++;grid.appendChild(createPaletteCard({id:d.id,...d.data()}))}});
+if(count===0)grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#666;padding:60px">Selecione paletas para exibir</p>';
+}
+}catch(e){
+console.error('Erro:',e);
+grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#f00;padding:60px">Erro ao carregar paletas</p>';
+}
+}
+
+function createPaletteCard(p){
+const c=document.createElement('div');
+c.className='palette-card';
+c.onclick=()=>window.location.href='palette.html';
+let g='#ccc';
+if(p.colors&&Array.isArray(p.colors)){
+if(p.colors.length>1)g=`linear-gradient(135deg,${p.colors.join(',')})`;
+else if(p.colors.length===1)g=p.colors[0];
+}
+c.innerHTML=`<div class="palette-swatch" style="background:${g}"></div><div class="palette-info"><div class="palette-name">${p.name||'Paleta'}</div><div class="palette-hex">${p.colors?p.colors.length+' cores':'Sem cores'}</div></div>`;
+return c;
+}
+
+window.openPaletteSelector=async()=>{
+if(!isAdmin)return alert('Apenas administradores podem editar.');
+const snap=await getDocs(collection(db,'colorPalettes'));
+allPalettes=[];
+snap.forEach(d=>allPalettes.push({id:d.id,...d.data()}));
+const featDoc=await getDoc(doc(db,'settings','featuredPalettes'));
+selectedPalettes=featDoc.exists()&&featDoc.data().palettes?featDoc.data().palettes:[];
+const sel=document.getElementById('paletteSelector');
+sel.innerHTML='';
+allPalettes.forEach(p=>{
+const isSelected=selectedPalettes.includes(p.id);
+const item=document.createElement('div');
+item.className=`selector-item${isSelected?' selected':''}`;
+item.onclick=()=>togglePalette(p.id,item);
+let g='#ccc';
+if(p.colors&&Array.isArray(p.colors)){
+if(p.colors.length>1)g=`linear-gradient(135deg,${p.colors.join(',')})`;
+else if(p.colors.length===1)g=p.colors[0];
+}
+item.innerHTML=`<div class="selector-img" style="background:${g}"></div><div class="selector-info"><div class="selector-name">${p.name||'Paleta'}</div><div class="selector-desc">${p.colors?p.colors.length+' cores':'Sem cores'}</div></div><div class="selector-check">${isSelected?'<i class="fas fa-check"></i>':''}</div>`;
+sel.appendChild(item);
+});
+document.getElementById('paletteModal').classList.add('active');
+};
+
+window.togglePalette=(id,el)=>{
+const idx=selectedPalettes.indexOf(id);
+if(idx>-1){
+selectedPalettes.splice(idx,1);
+el.classList.remove('selected');
+el.querySelector('.selector-check').innerHTML='';
+}else{
+if(selectedPalettes.length>=4)return alert('Você pode selecionar no máximo 4 paletas.');
+selectedPalettes.push(id);
+el.classList.add('selected');
+el.querySelector('.selector-check').innerHTML='<i class="fas fa-check"></i>';
+}
+};
+
+window.savePalettes=async()=>{
+try{
+await setDoc(doc(db,'settings','featuredPalettes'),{palettes:selectedPalettes,updatedAt:new Date()});
+alert('✓ Paletas atualizadas com sucesso!');
+closePaletteModal();
+loadPalettes();
+}catch(e){
+console.error('Erro:',e);
+alert('Erro ao salvar. Tente novamente.');
+}
+};
+
+window.closePaletteModal=()=>document.getElementById('paletteModal').classList.remove('active');
+
+// Newsletter
+document.getElementById('newsletterForm').addEventListener('submit',async(e)=>{
+e.preventDefault();
+const email=e.target.querySelector('input').value;
+alert(`✓ Obrigado por se inscrever! Confirme em ${email}`);
+e.target.reset();
+});
+
+function formatPrice(p){
+if(!p||isNaN(p))return'R$ 0,00';
+return`R$ ${parseFloat(p).toFixed(2).replace('.',',')}`;
+}
+
+console.log('🛍️ ColorShop Premium Loaded');
+</script>
+</body>
+</html>

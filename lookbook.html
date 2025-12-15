@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ColorShop - Lookbook</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fff;
+  --text:#000;
+  --gray:#4b4848;
+  --border:#e5e5e5;
+  --red:#ef4444;
+}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* Action Buttons */
+.action-btn{
+  position:fixed;
+  right:32px;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:var(--text);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.15);
+  transition:all .3s;
+  z-index:999;
+}
+.action-btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 6px 20px rgba(0,0,0,0.25);
+}
+
+.btn-home{bottom:140px;background:#666}
+.btn-cart{bottom:80px}
+.btn-download{
+  bottom:20px;
+  background:#111;
+}
+
+/* Lookbook Grid */
+.lookbook-container{padding:0;width:100%;min-height:100vh}
+.lookbook-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  width:100%;
+  gap:0;
+}
+
+.lookbook-item{
+  position:relative;
+  overflow:hidden;
+  background:#000;
+}
+
+/* Sizes */
+.lookbook-item.type-half{grid-column:span 1;aspect-ratio:3/4}
+.lookbook-item.type-full{grid-column:span 2;aspect-ratio:16/9}
+.lookbook-item.type-third{grid-column:span 1;aspect-ratio:1/1}
+
+/* Image (sem hover, sem zoom) */
+.lookbook-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .6s ease;
+}
+.lookbook-img.loaded{
+  opacity:1;
+}
+
+/* Nome fixo */
+.lookbook-title-fixed{
+  position:absolute;
+  bottom:12px;
+  left:12px;
+  background:rgba(255,255,255,0.85);
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+  color:#000;
+  backdrop-filter:blur(6px);
+}
+
+/* Like simples */
+.like-btn{
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.95);
+  border:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:all .3s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  z-index:10;
+}
+.like-btn:hover{
+  transform:scale(1.15);
+}
+.like-btn i{
+  font-size:18px;
+  color:#000;
+}
+.like-btn.liked i{
+  color:var(--red);
+}
+
+/* Toast */
+.toast-container{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.toast{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px 20px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.15);
+  display:flex;
+  gap:12px;
+  animation:toastIn .4s;
+  position:relative;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+.toast.removing{animation:toastOut .3s forwards}
+@keyframes toastOut{to{opacity:0;transform:translateX(100px)}}
+
+.toast-icon{
+  width:40px;height:40px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(22,163,74,0.1);
+  color:#16a34a;
+}
+.toast-title{font-size:14px;font-weight:700}
+.toast-message{font-size:13px;color:var(--gray)}
+.toast-close{
+  background:none;border:none;
+  cursor:pointer;
+  font-size:18px;
+  position:absolute;
+  right:10px;top:10px;
+}
+
+@media(max-width:768px){
+  .lookbook-grid{grid-template-columns:1fr}
+  .lookbook-item.type-half,
+  .lookbook-item.type-full,
+  .lookbook-item.type-third{
+    grid-column:span 1;
+  }
+  .lookbook-item.type-third{aspect-ratio:4/3}
+  .action-btn{right:20px;width:44px;height:44px}
+  .btn-home{bottom:140px}
+  .btn-cart{bottom:80px}
+  .btn-download{bottom:20px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="lookbook-container">
+  <div class="lookbook-grid" id="lookbookGrid"></div>
+</div>
+
+<!-- Buttons -->
+<button class="action-btn btn-home" onclick="goHome()">
+  <i class="fas fa-home"></i>
+</button>
+
+<button class="action-btn btn-cart" onclick="goToProducts()">
+  <i class="fas fa-shopping-bag"></i>
+</button>
+
+<button class="action-btn btn-download" onclick="downloadPDF()">
+  <i class="fas fa-download"></i>
+</button>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, updateDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyCLJ5jo4JknJAe9OlH10EawYEvqjJGnvKg",
+  authDomain:"myfrancashop.firebaseapp.com",
+  projectId:"myfrancashop",
+  storageBucket:"myfrancashop.firebasestorage.app",
+  messagingSenderId:"935759870053",
+  appId:"1:935759870053:web:aabe4af138691d021bee8c"
+});
+
+const db = getFirestore(app);
+
+// Suas imagens — todas começam com likes 0
+const lookbookImages = [
+  {id:'1',type:'half',image:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800',title:'Look Elegante'},
+  {id:'2',type:'half',image:'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800',title:'Estilo Casual'},
+  {id:'3',type:'full',image:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600',title:'Coleção Verão'},
+  {id:'4',type:'third',image:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600',title:'Acessórios'},
+  {id:'5',type:'third',image:'https://images.unsplash.com/photo-1467043237213-65f2da53396f?w=600',title:'Minimalista'},
+  {id:'6',type:'third',image:'https://images.unsplash.com/photo-1445205170230-053b83016050?w=600',title:'Street Style'},
+  {id:'7',type:'half',image:'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800',title:'Noite Especial'},
+  {id:'8',type:'half',image:'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800',title:'Boho Chic'},
+  {id:'9',type:'full',image:'https://images.unsplash.com/photo-1558769132-cb1aea841c87?w=1600',title:'Editorial Fashion'},
+  {id:'10',type:'third',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600',title:'Cores Vibrantes'},
+  {id:'11',type:'third',image:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600',title:'Clássico'},
+  {id:'12',type:'third',image:'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600',title:'Tendências'},
+];
+
+// Toast
+function showToast(message){
+  const c = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerHTML = `
+    <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
+    <div>
+      <div class="toast-title">Sucesso</div>
+      <div class="toast-message">${message}</div>
+    </div>
+    <button class="toast-close" onclick="this.parentElement.remove()">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  c.appendChild(t);
+  setTimeout(()=>{ t.classList.add("removing"); setTimeout(()=>t.remove(),300); },2000);
+}
+
+// Buttons
+window.goHome = () => location.href = "home.html";
+window.goToProducts = () => location.href = "produtos.html";
+window.downloadPDF = () => {
+  window.location.href = "meu_catalogo.pdf"; // substitua pelo arquivo real
+};
+
+// Firestore Like
+async function toggleLike(id){
+  const btn = document.querySelector(`[data-like="${id}"]`);
+  btn.classList.toggle("liked");
+
+  const ref = doc(db, "lookbook", id);
+  await updateDoc(ref, { likes: increment(1) });
+
+  showToast("Curtido!");
+}
+
+window.toggleLike = toggleLike;
+
+
+// Renderização
+function renderLookbook(){
+  const grid = document.getElementById("lookbookGrid");
+
+  grid.innerHTML = lookbookImages.map(img => `
+    <div class="lookbook-item type-${img.type}">
+      <img src="${img.image}" class="lookbook-img" loading="lazy"
+           onload="this.classList.add('loaded')">
+
+      <button class="like-btn" onclick="toggleLike('${img.id}')" data-like="${img.id}">
+        <i class="fas fa-heart"></i>
+      </button>
+
+      <div class="lookbook-title-fixed">${img.title}</div>
+    </div>
+  `).join("");
+}
+
+renderLookbook();
+</script>
+
+</body>
+</html>

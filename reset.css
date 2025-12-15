@@ -1,0 +1,79 @@
+/* ===============================
+   RESET BASE - ColorShop
+   =============================== */
+
+/* Remove margens e paddings padrão */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Remove sublinhados e estilos padrões */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Tipografia consistente */
+html, body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  overscroll-behavior: none;
+  background-color: #fff;
+  color: #000;
+}
+
+/* Evita rolagem dupla */
+body {
+  overflow: scroll;
+}
+
+/* Remove outline ao clicar em botões (mantendo acessibilidade no teclado) */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* ===============================
+   SCROLLBAR CUSTOMIZADO
+   =============================== */
+
+/* Chrome, Edge e Safari */
+::-webkit-scrollbar {
+  width: 0;              /* Remove a barra sem quebrar o scroll */
+  height: 0;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none; /* Remove no Firefox */
+}
+
+/* ===============================
+   CORES DO NAVEGADOR
+   =============================== */
+
+/* Cor da barra superior no mobile (Android / iOS Safari) */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Cor do navegador no Chrome Android */
+:root {
+  --theme-color: #ffffff; /* Altere conforme o tema do site */
+}
+
+meta[name="theme-color"] {
+  content: var(--theme-color);
+}

@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Blog - ColorShop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#e8e5e3;
+--text:#0f0f0f;
+--border:#a8a5a3;
+--title-font:'Space Grotesk',sans-serif;
+--italic-font:'Playfair Display',serif;
+--primary:rgb(201,20,20)
+}
+body{font-family:var(--title-font);background:var(--bg);color:var(--text);overflow:hidden;padding:0;margin:0}
+
+/* Action Buttons */
+.action-btn{
+position:fixed;
+right:32px;
+width:48px;
+height:48px;
+border-radius:50%;
+background:var(--text);
+color:#fff;
+border:none;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:16px;
+box-shadow:0 4px 16px rgba(0,0,0,.15);
+transition:all .3s;
+z-index:999
+}
+.action-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.btn-home{bottom:200px;background:#666}
+.btn-products{bottom:140px;background:#444}
+.btn-admin{bottom:80px;background:var(--primary);display:none}
+.btn-admin.show{display:flex}
+.btn-download{bottom:20px;background:#111}
+
+/* Admin Badge */
+.admin-badge{
+position:fixed;
+top:20px;
+right:20px;
+background:var(--primary);
+color:#fff;
+padding:8px 16px;
+border-radius:20px;
+font-size:11px;
+font-weight:700;
+letter-spacing:1px;
+text-transform:uppercase;
+display:none;
+z-index:998
+}
+.admin-badge.show{display:block}
+
+/* Main Grid */
+.blog{
+display:grid;
+height:100vh;
+overflow:hidden;
+grid-template-columns:55% 45%;
+grid-template-rows:100%;
+width:100%;
+position:relative
+}
+
+/* Scrollable Articles */
+.blog-scroll-section{
+overflow-y:auto;
+overflow-x:hidden;
+height:100%;
+display:flex;
+flex-direction:column;
+scroll-snap-type:y mandatory;
+padding:0 40px;
+border-right:1px solid var(--border)
+}
+.blog-scroll-section::-webkit-scrollbar{display:none}
+.article-item{
+flex-shrink:0;
+min-height:100%;
+scroll-snap-align:start;
+display:flex;
+flex-direction:column;
+padding:60px 0
+}
+.article-header{margin-bottom:32px}
+.article-category{
+display:inline-block;
+background:var(--primary);
+color:#fff;
+padding:6px 16px;
+border-radius:20px;
+font-size:10px;
+font-weight:800;
+letter-spacing:1.2px;
+text-transform:uppercase;
+margin-bottom:16px
+}
+.article-date{
+font-size:14px;
+color:var(--text);
+opacity:.6;
+margin-bottom:8px
+}
+.article-big-title{
+font-size:clamp(48px,7vw,96px);
+font-weight:900;
+letter-spacing:-3px;
+line-height:.95;
+margin-bottom:24px
+}
+.article-content{flex:1;display:flex;flex-direction:column}
+.article-image{
+width:100%;
+height:clamp(200px,25vh,320px);
+object-fit:cover;
+filter:grayscale(.8);
+margin-bottom:20px;
+cursor:pointer;
+transition:all .4s;
+border-radius:4px
+}
+.article-image:hover{filter:grayscale(0);transform:scale(1.01)}
+.article-title{
+font-size:24px;
+font-weight:600;
+line-height:1.2;
+margin-bottom:12px;
+cursor:pointer;
+transition:opacity .3s
+}
+.article-title:hover{opacity:.6}
+.article-meta{
+display:flex;
+gap:16px;
+font-size:13px;
+margin-bottom:16px;
+opacity:.7
+}
+.article-author{font-style:italic}
+.article-excerpt{
+font-size:14px;
+line-height:1.6;
+margin-bottom:20px;
+opacity:.8
+}
+.article-read-more{
+color:var(--text);
+text-decoration:none;
+font-size:20px;
+letter-spacing:-1px;
+display:flex;
+align-items:center;
+justify-content:flex-end;
+margin-top:auto;
+border-top:1px solid var(--border);
+padding-top:16px;
+transition:opacity .3s
+}
+.article-read-more:hover{opacity:.6}
+.article-read-more svg{width:24px;margin-right:10px}
+.admin-actions{
+position:absolute;
+top:16px;
+right:16px;
+display:flex;
+gap:8px;
+z-index:10
+}
+.admin-btn-small{
+width:32px;
+height:32px;
+border-radius:50%;
+background:rgba(255,255,255,.95);
+border:none;
+cursor:pointer;
+font-size:12px;
+transition:all .3s;
+box-shadow:0 2px 8px rgba(0,0,0,.2)
+}
+.admin-btn-small:hover{transform:scale(1.1)}
+.admin-btn-small.delete{background:rgba(220,38,38,.9);color:#fff}
+
+/* Right Sidebar */
+.blog-right-section{
+display:flex;
+flex-direction:column;
+padding:60px 40px;
+overflow:auto;
+height:100%
+}
+.blog-right-section::-webkit-scrollbar{display:none}
+.blog-right-header{margin-bottom:40px}
+.blog-right-title{
+font-size:clamp(60px,8vw,96px);
+font-weight:900;
+letter-spacing:-4px;
+line-height:.9;
+margin-bottom:16px
+}
+.blog-right-subtitle{
+font-size:18px;
+font-family:var(--italic-font);
+font-style:italic;
+opacity:.7
+}
+.featured-title{
+font-size:24px;
+font-family:var(--italic-font);
+font-style:italic;
+border-bottom:1px solid var(--border);
+padding-bottom:20px;
+margin-bottom:32px
+}
+.featured-item{
+margin-bottom:40px;
+cursor:pointer;
+transition:opacity .3s
+}
+.featured-item:hover{opacity:.7}
+.featured-number{
+font-size:56px;
+font-weight:300;
+letter-spacing:-2px;
+margin-bottom:8px
+}
+.featured-date{
+font-size:12px;
+opacity:.6;
+margin-bottom:12px
+}
+.featured-item-title{
+font-size:22px;
+font-weight:600;
+line-height:1.2;
+letter-spacing:-1px;
+margin-bottom:8px
+}
+.featured-excerpt{
+font-size:14px;
+line-height:1.5;
+opacity:.7
+}
+
+/* Welcome Modal */
+.welcome-modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+z-index:10001;
+align-items:center;
+justify-content:center;
+padding:20px;
+backdrop-filter:blur(10px)
+}
+.welcome-modal.active{display:flex;animation:fadeIn .4s}
+.welcome-box{
+background:var(--bg);
+border-radius:8px;
+padding:60px;
+max-width:600px;
+width:100%;
+text-align:center;
+animation:modalUp .5s
+}
+.welcome-icon{
+font-size:64px;
+margin-bottom:24px;
+opacity:.8
+}
+.welcome-title{
+font-size:32px;
+font-weight:900;
+letter-spacing:-2px;
+margin-bottom:16px
+}
+.welcome-text{
+font-size:16px;
+line-height:1.6;
+opacity:.8;
+margin-bottom:32px
+}
+.welcome-checkbox{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+margin-bottom:32px;
+font-size:14px
+}
+.welcome-checkbox input{
+width:18px;
+height:18px;
+cursor:pointer
+}
+.welcome-btn{
+padding:16px 48px;
+background:var(--text);
+color:var(--bg);
+border:none;
+border-radius:50px;
+font-size:14px;
+font-weight:700;
+cursor:pointer;
+transition:all .3s;
+text-transform:uppercase;
+letter-spacing:1px
+}
+.welcome-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+
+/* Article Modal */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:var(--bg);
+z-index:10000;
+overflow-y:auto;
+overflow-x:hidden
+}
+.modal.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.modal-box{
+background:var(--bg);
+padding:80px;
+width:100%;
+min-height:100vh
+}
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:40px;
+border-bottom:1px solid var(--border);
+padding-bottom:20px
+}
+.modal-title{
+font-size:32px;
+font-weight:900;
+letter-spacing:-2px
+}
+.modal-close{
+background:var(--text);
+color:var(--bg);
+border:none;
+width:48px;
+height:48px;
+border-radius:50%;
+font-size:24px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:all .3s;
+flex-shrink:0
+}
+.modal-close:hover{transform:rotate(90deg) scale(1.1)}
+.form-group{margin-bottom:28px}
+.label{
+display:block;
+font-size:11px;
+font-weight:700;
+letter-spacing:1px;
+text-transform:uppercase;
+margin-bottom:10px;
+opacity:.7
+}
+.input,.textarea,.select{
+width:100%;
+padding:16px 20px;
+border:2px solid var(--border);
+border-radius:4px;
+font-size:14px;
+font-family:var(--title-font);
+background:#fff;
+transition:all .3s
+}
+.input:focus,.textarea:focus,.select:focus{
+outline:none;
+border-color:var(--text);
+box-shadow:0 0 0 3px rgba(0,0,0,.05)
+}
+.textarea{min-height:120px;resize:vertical}
+.preview-img{
+width:100%;
+max-height:300px;
+object-fit:cover;
+margin-top:12px;
+filter:grayscale(.5);
+border-radius:4px
+}
+.form-actions{
+display:flex;
+gap:16px;
+margin-top:40px;
+padding-top:20px;
+border-top:1px solid var(--border)
+}
+.btn{
+flex:1;
+padding:16px 36px;
+border:2px solid var(--text);
+border-radius:50px;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+transition:all .3s;
+font-family:var(--title-font);
+text-transform:uppercase;
+letter-spacing:1px;
+background:transparent
+}
+.btn-primary{background:var(--text);color:var(--bg)}
+.btn-primary:hover{background:transparent;color:var(--text)}
+.btn-outline{background:transparent;color:var(--text)}
+.btn-outline:hover{background:var(--text);color:var(--bg)}
+.input-hint{
+font-size:11px;
+opacity:.6;
+margin-top:6px;
+font-style:italic
+}
+
+/* Article View */
+.article-view{
+background:var(--bg);
+min-height:100vh;
+padding:80px;
+width:100%;
+overflow-y:auto;
+position:fixed;
+inset:0;
+z-index:10000
+}
+.article-view-back{
+display:inline-flex;
+align-items:center;
+gap:10px;
+color:var(--text);
+text-decoration:none;
+font-size:13px;
+font-weight:700;
+margin-bottom:40px;
+text-transform:uppercase;
+letter-spacing:1px;
+opacity:.6;
+transition:all .3s
+}
+.article-view-back:hover{opacity:1;transform:translateX(-4px)}
+.article-view-content{max-width:900px;margin:0 auto}
+.article-view-category{
+display:inline-block;
+background:var(--primary);
+color:#fff;
+padding:8px 20px;
+border-radius:20px;
+font-size:10px;
+font-weight:800;
+letter-spacing:1.2px;
+text-transform:uppercase;
+margin-bottom:24px
+}
+.article-view-title{
+font-size:clamp(40px,7vw,72px);
+font-weight:900;
+letter-spacing:-3px;
+line-height:.95;
+margin-bottom:24px
+}
+.article-view-meta{
+display:flex;
+gap:24px;
+font-size:13px;
+opacity:.7;
+margin-bottom:48px;
+padding-bottom:24px;
+border-bottom:1px solid var(--border);
+flex-wrap:wrap
+}
+.article-view-cover{
+width:100%;
+aspect-ratio:16/9;
+object-fit:cover;
+margin-bottom:48px;
+filter:grayscale(.3);
+border-radius:4px
+}
+.article-view-section{margin-bottom:48px}
+.article-view-section p{
+font-size:17px;
+line-height:1.8;
+margin-bottom:20px;
+opacity:.9
+}
+.article-view-image{
+width:100%;
+margin:48px 0;
+filter:grayscale(.3);
+border-radius:4px
+}
+.article-view-links{
+margin-top:48px;
+padding-top:24px;
+border-top:1px solid var(--border)
+}
+.article-view-links h3{
+font-size:20px;
+margin-bottom:16px;
+font-weight:700
+}
+.external-link{
+display:flex;
+align-items:center;
+gap:8px;
+padding:12px 0;
+color:var(--text);
+text-decoration:none;
+transition:opacity .3s;
+font-size:15px
+}
+.external-link:hover{opacity:.6}
+.external-link i{color:var(--primary)}
+
+/* Responsive */
+@media(max-width:1024px){
+.blog{grid-template-columns:100%}
+.blog-right-section{display:none}
+.blog-scroll-section{border-right:0;padding:0 30px}
+}
+@media(max-width:768px){
+.blog-scroll-section{padding:0 20px}
+.article-item{padding:40px 0}
+.article-big-title{font-size:36px}
+.article-view{padding:40px 20px}
+.modal-box{padding:40px 24px}
+.welcome-box{padding:40px 24px}
+.action-btn{right:20px;width:44px;height:44px}
+.btn-home{bottom:200px}
+.btn-products{bottom:140px}
+.btn-admin{bottom:80px}
+.btn-download{bottom:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="admin-badge" id="adminBadge">ADMIN</div>
+
+<div class="blog">
+<!-- Scrollable Articles -->
+<div class="blog-scroll-section" id="articlesContainer">
+<div style="padding:40vh 0;text-align:center;opacity:.5">
+<i class="fas fa-spinner fa-spin" style="font-size:32px"></i>
+<p style="margin-top:16px">Carregando...</p>
+</div>
+</div>
+
+<!-- Right Sidebar -->
+<div class="blog-right-section">
+<div class="blog-right-header">
+<div class="blog-right-title">Blog</div>
+<div class="blog-right-subtitle">Moda & Estilo</div>
+</div>
+<div class="featured-title">Em Destaque</div>
+<div id="featuredList"></div>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<button class="action-btn btn-home" onclick="location.href='index.html'" title="Home">
+<i class="fas fa-home"></i>
+</button>
+<button class="action-btn btn-products" onclick="location.href='products.html'" title="Produtos">
+<i class="fas fa-shopping-bag"></i>
+</button>
+<button class="action-btn btn-admin" id="btnAdmin" onclick="openCreateModal()" title="Novo Artigo">
+<i class="fas fa-plus"></i>
+</button>
+<button class="action-btn btn-download" onclick="window.print()" title="Imprimir">
+<i class="fas fa-print"></i>
+</button>
+
+<!-- Welcome Modal -->
+<div class="welcome-modal" id="welcomeModal">
+<div class="welcome-box">
+<div class="welcome-icon">👁️</div>
+<h2 class="welcome-title">Leitura Confortável</h2>
+<p class="welcome-text">Esta página foi projetada com cores suaves e tipografia otimizada para proporcionar uma experiência de leitura agradável e confortável aos seus olhos.</p>
+<div class="welcome-checkbox">
+<input type="checkbox" id="dontShowAgain">
+<label for="dontShowAgain">Não mostrar novamente</label>
+</div>
+<button class="welcome-btn" onclick="closeWelcome()">Começar a Ler</button>
+</div>
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal" id="articleModal">
+<div class="modal-box">
+<div class="modal-header">
+<h3 class="modal-title" id="modalTitle">Novo Artigo</h3>
+<button class="modal-close" onclick="closeModal()">×</button>
+</div>
+<form id="articleForm">
+<div class="form-group">
+<label class="label">Categoria</label>
+<select class="select" id="category" required>
+<option value="">Selecione</option>
+<option value="Essencial">Essencial</option>
+<option value="Moda">Moda</option>
+<option value="Beleza">Beleza</option>
+<option value="Saúde">Saúde</option>
+<option value="Estilo">Estilo</option>
+</select>
+</div>
+<div class="form-group">
+<label class="label">Autor</label>
+<input type="text" class="input" id="author" placeholder="Nome do autor" required>
+</div>
+<div class="form-group">
+<label class="label">Tempo de Leitura (minutos)</label>
+<input type="number" class="input" id="readTime" placeholder="Ex: 5" required min="1">
+</div>
+<div class="form-group">
+<label class="label">Título</label>
+<input type="text" class="input" id="title" placeholder="Título do artigo" required>
+</div>
+<div class="form-group">
+<label class="label">Preview</label>
+<textarea class="textarea" id="preview" placeholder="Resumo do artigo" required style="min-height:80px"></textarea>
+</div>
+<div class="form-group">
+<label class="label">URL da Capa</label>
+<input type="url" class="input" id="coverImage" placeholder="https://..." required>
+<div class="input-hint">Cole o link da imagem</div>
+<img id="coverPreview" class="preview-img" style="display:none">
+</div>
+<div class="form-group">
+<label class="label">Introdução</label>
+<textarea class="textarea" id="introduction" placeholder="Texto de introdução" required></textarea>
+</div>
+<div class="form-group">
+<label class="label">URL da Segunda Foto (Opcional)</label>
+<input type="url" class="input" id="secondImage" placeholder="https://...">
+<img id="secondPreview" class="preview-img" style="display:none">
+</div>
+<div class="form-group">
+<label class="label">Desenvolvimento</label>
+<textarea class="textarea" id="development" placeholder="Texto de desenvolvimento" required></textarea>
+</div>
+<div class="form-group">
+<label class="label">URL da Terceira Foto (Opcional)</label>
+<input type="url" class="input" id="thirdImage" placeholder="https://...">
+<img id="thirdPreview" class="preview-img" style="display:none">
+</div>
+<div class="form-group">
+<label class="label">Conclusão</label>
+<textarea class="textarea" id="conclusion" placeholder="Texto de conclusão" required></textarea>
+</div>
+<div class="form-group">
+<label class="label">Links Externos (um por linha)</label>
+<textarea class="textarea" id="externalLinks" placeholder="Título do Link | https://exemplo.com&#10;Outro Link | https://exemplo2.com" style="min-height:100px"></textarea>
+<div class="input-hint">Formato: Título | URL (um por linha)</div>
+</div>
+<div class="form-actions">
+<button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+<button type="submit" class="btn btn-primary">Publicar</button>
+</div>
+</form>
+</div>
+</div>
+
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import{getFirestore,collection,getDocs,doc,getDoc,setDoc,deleteDoc,query,orderBy}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import{getAuth,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+const app=initializeApp({apiKey:"AIzaSyCLJ5jo4JknJAe9OlH10EawYEvqjJGnvKg",authDomain:"myfrancashop.firebaseapp.com",projectId:"myfrancashop",storageBucket:"myfrancashop.firebasestorage.app",messagingSenderId:"935759870053",appId:"1:935759870053:web:aabe4af138691d021bee8c"});
+
+const db=getFirestore(app);
+const auth=getAuth(app);
+let isAdmin=false;
+let articles=[];
+let editingId=null;
+
+// Welcome Modal
+window.addEventListener('DOMContentLoaded',()=>{
+const dontShow=localStorage.getItem('blogWelcomeSeen');
+if(!dontShow){
+document.getElementById('welcomeModal').classList.add('active');
+}
+});
+
+window.closeWelcome=()=>{
+const dontShow=document.getElementById('dontShowAgain').checked;
+if(dontShow){
+localStorage.setItem('blogWelcomeSeen','true');
+}
+document.getElementById('welcomeModal').classList.remove('active');
+};
+
+// Auth
+onAuthStateChanged(auth,async(user)=>{
+if(user){
+try{
+const adminDoc=await getDoc(doc(db,'admins',user.uid));
+isAdmin=adminDoc.exists();
+if(isAdmin){
+document.getElementById('adminBadge').classList.add('show');
+document.getElementById('btnAdmin').classList.add('show');
+}
+}catch(e){console.error(e)}
+}
+loadArticles();
+});
+
+// Image Preview
+['coverImage','secondImage','thirdImage'].forEach(id=>{
+document.getElementById(id).addEventListener('input',(e)=>{
+const url=e.target.value;
+const preview=document.getElementById(id.replace('Image','Preview'));
+if(url&&isValidUrl(url)){
+preview.src=url;
+preview.style.display='block';
+preview.onerror=()=>preview.style.display='none';
+}else{
+preview.style.display='none';
+}
+});
+});
+
+function isValidUrl(s){
+try{new URL(s);return true}catch(_){return false}
+}
+
+// Load Articles
+async function loadArticles(){
+const container=document.getElementById('articlesContainer');
+try{
+const q=query(collection(db,'blogArticles'),orderBy('createdAt','desc'));
+const snap=await getDocs(q);
+articles=[];
+snap.forEach(d=>articles.push({id:d.id,...d.data()}));
+renderArticles();
+renderFeatured();
+}catch(e){
+console.error(e);
+container.innerHTML='<div style="padding:40vh 0;text-align:center;opacity:.5"><i class="fas fa-exclamation-circle" style="font-size:32px"></i><p style="margin-top:16px">Erro ao carregar</p></div>';
+}
+}
+
+function renderArticles(){
+const container=document.getElementById('articlesContainer');
+if(articles.length===0){
+container.innerHTML='<div style="padding:40vh 0;text-align:center;opacity:.5"><p>Nenhum artigo publicado</p></div>';
+return;
+}
+container.innerHTML='';
+articles.forEach((a)=>{
+const item=document.createElement('div');
+item.className='article-item';
+const adminBtns=isAdmin?`
+<div class="admin-actions">
+<button onclick="event.stopPropagation();editArticle('${a.id}')" class="admin-btn-small"><i class="fas fa-edit"></i></button>
+<button onclick="event.stopPropagation();deleteArticle('${a.id}')" class="admin-btn-small delete"><i class="fas fa-trash"></i></button>
+</div>`:'';
+item.innerHTML=`
+<div class="article-header">
+<div class="article-category">${a.category||'Geral'}</div>
+<div class="article-date">${formatDate(a.createdAt)}</div>
+<div class="article-big-title">${a.title}</div>
+</div>
+<div class="article-content">
+<div style="position:relative">
+<img src="${a.coverImage}" alt="${a.title}" class="article-image" onclick="viewArticle('${a.id}')">
+${adminBtns}
+</div>
+<h2 class="article-title" onclick="viewArticle('${a.id}')">${a.title.substring(0,60)}${a.title.length>60?'...':''}</h2>
+<div class="article-meta">
+<span class="article-author">${a.author||'Anônimo'}</span>
+<span>${a.readTime||'5'} min</span>
+</div>
+<p class="article-excerpt">${a.preview}</p>
+<a href="#" class="article-read-more" onclick="event.preventDefault();viewArticle('${a.id}')">
+<svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+<path d="M15 10l5 5-5 5"/>
+<path d="M4 4v7a4 4 0 004 4h12"/>
+</svg>
+Ler Mais
+</a>
+</div>`;
+container.appendChild(item);
+});
+}
+
+function renderFeatured(){
+const list=document.getElementById('featuredList');
+list.innerHTML='';
+articles.slice(0,6).forEach((a,i)=>{
+const item=document.createElement('div');
+item.className='featured-item';
+item.innerHTML=`
+<div class="featured-number">${String(i+1).padStart(2,'0')}</div>
+<div class="featured-date">${formatDate(a.createdAt)}</div>
+<div class="featured-item-title">${a.title}</div>
+<div class="featured-excerpt">${a.preview.substring(0,80)}...</div>`;
+item.onclick=()=>viewArticle(a.id);
+list.appendChild(item);
+});
+}
+
+// Modal
+window.openCreateModal=()=>{
+editingId=null;
+document.getElementById('modalTitle').textContent='Novo Artigo';
+document.getElementById('articleForm').reset();
+document.querySelectorAll('.preview-img').forEach(img=>{
+img.style.display='none';
+img.src='';
+});
+document.getElementById('articleModal').classList.add('active');
+document.body.style.overflow='hidden';
+};
+
+window.closeModal=()=>{
+document.getElementById('articleModal').classList.remove('active');
+document.body.style.overflow='';
+editingId=null;
+};
+
+window.editArticle=async(id)=>{
+editingId=id;
+const a=articles.find(x=>x.id===id);
+if(!a)return;
+document.getElementById('modalTitle').textContent='Editar Artigo';
+document.getElementById('category').value=a.category||'';
+document.getElementById('author').value=a.author||'';
+document.getElementById('readTime').value=a.readTime||'5';
+document.getElementById('title').value=a.title||'';
+document.getElementById('preview').value=a.preview||'';
+document.getElementById('coverImage').value=a.coverImage||'';
+document.getElementById('introduction').value=a.introduction||'';
+document.getElementById('secondImage').value=a.secondImage||'';
+document.getElementById('development').value=a.development||'';
+document.getElementById('thirdImage').value=a.thirdImage||'';
+document.getElementById('conclusion').value=a.conclusion||'';
+document.getElementById('externalLinks').value=a.externalLinks||'';
+if(a.coverImage){
+document.getElementById('coverPreview').src=a.coverImage;
+document.getElementById('coverPreview').style.display='block';
+}
+if(a.secondImage){
+document.getElementById('secondPreview').src=a.secondImage;
+document.getElementById('secondPreview').style.display='block';
+}
+if(a.thirdImage){
+document.getElementById('thirdPreview').src=a.thirdImage;
+document.getElementById('thirdPreview').style.display='block';
+}
+document.getElementById('articleModal').classList.add('active');
+document.body.style.overflow='hidden';
+};
+
+window.deleteArticle=async(id)=>{
+if(!confirm('Excluir este artigo?'))return;
+try{
+await deleteDoc(doc(db,'blogArticles',id));
+alert('✓ Artigo excluído!');
+loadArticles();
+}catch(e){
+console.error(e);
+alert('Erro ao excluir.');
+}
+};
+
+// Submit
+document.getElementById('articleForm').addEventListener('submit',async(e)=>{
+e.preventDefault();
+if(!isAdmin)return alert('Apenas admin pode publicar.');
+const btn=e.target.querySelector('button[type="submit"]');
+btn.disabled=true;
+btn.textContent='Salvando...';
+try{
+const id=editingId||`article_${Date.now()}`;
+const data={
+category:document.getElementById('category').value,
+author:document.getElementById('author').value,
+readTime:document.getElementById('readTime').value,
+title:document.getElementById('title').value,
+preview:document.getElementById('preview').value,
+coverImage:document.getElementById('coverImage').value,
+introduction:document.getElementById('introduction').value,
+secondImage:document.getElementById('secondImage').value,
+development:document.getElementById('development').value,
+thirdImage:document.getElementById('thirdImage').value,
+conclusion:document.getElementById('conclusion').value,
+externalLinks:document.getElementById('externalLinks').value,
+updatedAt:new Date()
+};
+if(!editingId)data.createdAt=new Date();
+await setDoc(doc(db,'blogArticles',id),data,{merge:true});
+alert(editingId?'✓ Atualizado!':'✓ Publicado!');
+closeModal();
+loadArticles();
+}catch(e){
+console.error(e);
+alert('Erro ao salvar.');
+}finally{
+btn.disabled=false;
+btn.textContent='Publicar';
+}
+});
+
+// View Article
+window.viewArticle=(id)=>{
+const a=articles.find(x=>x.id===id);
+if(!a)return;
+const view=document.createElement('div');
+view.className='article-view';
+const links=a.externalLinks?a.externalLinks.split('\n').filter(l=>l.trim()).map(l=>{
+const parts=l.split('|');
+if(parts.length===2){
+return`<a href="${parts[1].trim()}" target="_blank" class="external-link"><i class="fas fa-external-link-alt"></i>${parts[0].trim()}</a>`;
+}
+return'';
+}).join(''):'';
+view.innerHTML=`
+<div class="article-view-content">
+<a href="#" class="article-view-back" onclick="event.preventDefault();location.reload()">
+<i class="fas fa-arrow-left"></i>Voltar
+</a>
+<div class="article-view-category">${a.category}</div>
+<h1 class="article-view-title">${a.title}</h1>
+<div class="article-view-meta">
+<span>${a.author||'Anônimo'}</span>
+<span>${formatDate(a.createdAt)}</span>
+<span>${a.readTime||'5'} min de leitura</span>
+</div>
+<img src="${a.coverImage}" alt="${a.title}" class="article-view-cover">
+<div class="article-view-section">
+<p>${a.introduction}</p>
+</div>
+${a.secondImage?`<img src="${a.secondImage}" alt="Imagem 2" class="article-view-image">`:''}
+<div class="article-view-section">
+<p>${a.development}</p>
+</div>
+${a.thirdImage?`<img src="${a.thirdImage}" alt="Imagem 3" class="article-view-image">`:''}
+<div class="article-view-section">
+<p>${a.conclusion}</p>
+</div>
+${links?`<div class="article-view-links"><h3>Links Relacionados</h3>${links}</div>`:''}
+</div>`;
+document.body.innerHTML='';
+document.body.appendChild(view);
+window.scrollTo(0,0);
+};
+
+function formatDate(date){
+if(!date)return'';
+const d=date.toDate?date.toDate():new Date(date);
+return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).replace(/\sde\s/g,' ');
+}
+
+console.log('📰 Blog Loaded');
+</script>
+</body>
+</html>
