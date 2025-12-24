@@ -689,7 +689,7 @@ const size=document.getElementById('productSize').value.trim();
 const material=document.getElementById('productMaterial').value.trim();
 const description=document.getElementById('productDescription').value.trim();
 const imagesText=document.getElementById('productImages').value.trim();
-const images=imagesText?imagesText.split('\n').map(url=>url.trim()).filter(url=>url):[]:
+const images=imagesText?imagesText.split('\n').map(url=>url.trim()).filter(url=>url):[];
 
 if(!code||!name||!price){
 showToast('Preencha os campos obrigatórios','error');

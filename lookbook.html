@@ -4,308 +4,442 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ColorShop - Lookbook</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#fff;
-  --text:#000;
-  --gray:#4b4848;
-  --border:#e5e5e5;
-  --red:#ef4444;
-}
-body{
-  font-family:'Inter',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
-}
+:root{--bg:#fff;--text:#000;--gray:#4b4848;--border:#e5e5e5;--overlay:rgba(255, 255, 255, 0.5)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 
 /* Action Buttons */
-.action-btn{
-  position:fixed;
-  right:32px;
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:var(--text);
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.15);
-  transition:all .3s;
-  z-index:999;
-}
-.action-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 6px 20px rgba(0,0,0,0.25);
-}
+.action-btn{position:fixed;right:32px;width:48px;height:48px;border-radius:50%;background:var(--text);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:all .3s;z-index:999}
+.action-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,0,0,0.25)}
+.btn-home{bottom:152px;background:#666}
+.btn-cart{bottom:92px}
+.btn-download{bottom:32px}
 
-.btn-home{bottom:140px;background:#666}
-.btn-cart{bottom:80px}
-.btn-download{
-  bottom:20px;
-  background:#111;
-}
+/* Hero Section */
+.hero-section{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.95}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 40px}
+.hero-title{font-size:72px;font-weight:300;letter-spacing:-2px;margin-bottom:24px;line-height:1.1}
+.hero-subtitle{font-size:18px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:40px}
+.hero-scroll{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);cursor:pointer;transition:all .3s}
+.hero-scroll:hover{color:var(--text)}
+.scroll-line{width:1px;height:40px;background:var(--gray);animation:scrollAnim 2s ease-in-out infinite}
+@keyframes scrollAnim{0%,100%{transform:scaleY(0.5);opacity:0.5}50%{transform:scaleY(1);opacity:1}}
 
-/* Lookbook Grid */
-.lookbook-container{padding:0;width:100%;min-height:100vh}
-.lookbook-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  width:100%;
-  gap:0;
-}
+/* Collection Grid */
+.collection-section{padding:100px 0}
+.section-header{text-align:center;margin-bottom:80px;padding:0 40px}
+.section-title{font-size:48px;font-weight:300;letter-spacing:-1px;margin-bottom:16px}
+.section-description{font-size:15px;color:var(--gray);max-width:600px;margin:0 auto;line-height:1.8}
 
-.lookbook-item{
-  position:relative;
-  overflow:hidden;
-  background:#000;
-}
+.lookbook-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0}
+.lookbook-item{position:relative;aspect-ratio:3/4;overflow:hidden;cursor:pointer;background:var(--bg)}
+.lookbook-item.large{grid-column:span 2;aspect-ratio:16/9}
+.lookbook-img{width:100%;height:100%;object-fit:cover;transition:all .6s ease}
+.lookbook-item:hover .lookbook-img{transform:scale(1.05)}
 
-/* Sizes */
-.lookbook-item.type-half{grid-column:span 1;aspect-ratio:3/4}
-.lookbook-item.type-full{grid-column:span 2;aspect-ratio:16/9}
-.lookbook-item.type-third{grid-column:span 1;aspect-ratio:1/1}
+.lookbook-overlay{position:absolute;inset:0;background:var(--overlay);backdrop-filter:blur(0px);opacity:0;transition:opacity .4s;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px;pointer-events:none}
+.lookbook-item:hover .lookbook-overlay{opacity:1;pointer-events:auto}
 
-/* Image (sem hover, sem zoom) */
-.lookbook-img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:0;
-  transition:opacity .6s ease;
-}
-.lookbook-img.loaded{
-  opacity:1;
-}
+.lookbook-details{text-align:center;transform:translateY(20px);transition:transform .4s .1s}
+.lookbook-item:hover .lookbook-details{transform:translateY(0)}
+.lookbook-season{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.lookbook-title{font-size:32px;font-weight:300;letter-spacing:-1px;margin-bottom:12px;line-height:1.2}
+.lookbook-description{font-size:14px;color:var(--gray);margin-bottom:24px;line-height:1.6;max-width:400px}
+.lookbook-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+.lookbook-tag{padding:6px 16px;border:1px solid var(--border);border-radius:50px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;background:var(--bg)}
+.btn-view-collection{padding:12px 32px;background:var(--text);color:#fff;border:none;border-radius:50px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;transition:all .3s}
+.btn-view-collection:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,0.2)}
 
-/* Nome fixo */
-.lookbook-title-fixed{
-  position:absolute;
-  bottom:12px;
-  left:12px;
-  background:rgba(255,255,255,0.85);
-  padding:6px 12px;
-  border-radius:8px;
-  font-size:14px;
-  font-weight:600;
-  color:#000;
-  backdrop-filter:blur(6px);
-}
+/* Editorial Section */
+.editorial-section{padding:100px 40px;background:#f9f9f9}
+.editorial-content{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.editorial-text{padding:40px}
+.editorial-label{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
+.editorial-title{font-size:42px;font-weight:300;letter-spacing:-1px;margin-bottom:24px;line-height:1.2}
+.editorial-description{font-size:16px;color:var(--gray);line-height:1.8;margin-bottom:32px}
+.editorial-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:40px}
+.stat-item{text-align:center}
+.stat-number{font-size:36px;font-weight:300;letter-spacing:-1px;margin-bottom:8px}
+.stat-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1.5px}
+.editorial-image{width:100%;height:600px;object-fit:cover;border-radius:0}
 
-/* Like simples */
-.like-btn{
-  position:absolute;
-  top:14px;
-  right:14px;
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.95);
-  border:none;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:all .3s;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-  z-index:10;
-}
-.like-btn:hover{
-  transform:scale(1.15);
-}
-.like-btn i{
-  font-size:18px;
-  color:#000;
-}
-.like-btn.liked i{
-  color:var(--red);
-}
+/* Behind the Scenes */
+.bts-section{padding:100px 0}
+.bts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;padding:0 40px;max-width:1400px;margin:0 auto}
+.bts-item{display:flex;flex-direction:column;gap:20px}
+.bts-image{width:100%;aspect-ratio:4/5;object-fit:cover}
+.bts-info{padding:0 8px}
+.bts-title{font-size:18px;font-weight:500;margin-bottom:8px;letter-spacing:-0.5px}
+.bts-text{font-size:14px;color:var(--gray);line-height:1.6}
+
+/* Video Section */
+.video-section{padding:100px 40px;background:#000;color:#fff}
+.video-container{max-width:1200px;margin:0 auto;text-align:center}
+.video-title{font-size:42px;font-weight:300;letter-spacing:-1px;margin-bottom:24px}
+.video-subtitle{font-size:15px;color:#999;margin-bottom:60px;letter-spacing:1px}
+.video-wrapper{position:relative;width:100%;aspect-ratio:16/9;background:#111;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+.video-placeholder{width:100%;height:100%;object-fit:cover}
+.video-play-btn{position:absolute;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:24px;color:#000;transition:all .3s}
+.video-wrapper:hover .video-play-btn{transform:scale(1.1);background:#fff}
+
+/* Download Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
+.modal.active{display:flex;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--bg);border-radius:0;width:100%;max-width:500px;animation:slideUp .4s;position:relative}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{padding:24px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-size:16px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray);padding:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.modal-close:hover{color:var(--text);transform:rotate(90deg)}
+.modal-content{padding:32px}
+.download-options{display:flex;flex-direction:column;gap:16px}
+.download-option{display:flex;align-items:center;justify-content:space-between;padding:20px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .3s}
+.download-option:hover{border-color:var(--text);background:#f9f9f9}
+.download-info{display:flex;align-items:center;gap:16px}
+.download-icon{width:48px;height:48px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text)}
+.download-text h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.download-text p{font-size:12px;color:var(--gray)}
+.download-btn{padding:8px 20px;background:var(--text);color:#fff;border:none;border-radius:50px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all .3s}
+.download-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 
 /* Toast */
-.toast-container{
-  position:fixed;
-  top:20px;
-  right:20px;
-  z-index:99999;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.toast{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:16px 20px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.15);
-  display:flex;
-  gap:12px;
-  animation:toastIn .4s;
-  position:relative;
-}
+.toast-container{position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:12px;pointer-events:none}
+.toast{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 20px;box-shadow:0 8px 24px rgba(0,0,0,0.15);display:flex;align-items:center;gap:12px;min-width:300px;animation:toastIn .4s;pointer-events:auto;position:relative;overflow:hidden}
 @keyframes toastIn{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
 .toast.removing{animation:toastOut .3s forwards}
 @keyframes toastOut{to{opacity:0;transform:translateX(100px)}}
-
-.toast-icon{
-  width:40px;height:40px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(22,163,74,0.1);
-  color:#16a34a;
-}
-.toast-title{font-size:14px;font-weight:700}
+.toast-icon{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(22,163,74,0.1);color:#16a34a}
+.toast-content{flex:1}
+.toast-title{font-size:14px;font-weight:700;margin-bottom:2px}
 .toast-message{font-size:13px;color:var(--gray)}
-.toast-close{
-  background:none;border:none;
-  cursor:pointer;
-  font-size:18px;
-  position:absolute;
-  right:10px;top:10px;
-}
+.toast-close{background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px;padding:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.toast-close:hover{color:var(--text)}
 
 @media(max-width:768px){
-  .lookbook-grid{grid-template-columns:1fr}
-  .lookbook-item.type-half,
-  .lookbook-item.type-full,
-  .lookbook-item.type-third{
-    grid-column:span 1;
-  }
-  .lookbook-item.type-third{aspect-ratio:4/3}
-  .action-btn{right:20px;width:44px;height:44px}
-  .btn-home{bottom:140px}
-  .btn-cart{bottom:80px}
-  .btn-download{bottom:20px}
+.hero-title{font-size:42px}
+.hero-subtitle{font-size:14px}
+.lookbook-grid{grid-template-columns:1fr}
+.lookbook-item.large{grid-column:span 1;aspect-ratio:3/4}
+.lookbook-overlay{padding:30px}
+.lookbook-title{font-size:24px}
+.editorial-content{grid-template-columns:1fr;gap:40px}
+.editorial-text{padding:20px}
+.editorial-title{font-size:32px}
+.editorial-stats{grid-template-columns:1fr;gap:24px}
+.bts-grid{grid-template-columns:1fr;gap:32px}
+.section-title{font-size:36px}
+.video-title{font-size:32px}
+.action-btn{right:20px;width:44px;height:44px}
+.btn-home{bottom:136px}
+.btn-cart{bottom:80px}
+.btn-download{bottom:20px}
+.collection-section,.bts-section{padding:60px 0}
+.editorial-section,.video-section{padding:60px 20px}
 }
 </style>
 </head>
-
 <body>
 
-<div class="lookbook-container">
-  <div class="lookbook-grid" id="lookbookGrid"></div>
+<!-- Hero Section -->
+<section class="hero-section">
+<img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&h=1080&fit=crop" alt="ColorShop Collection" class="hero-bg">
+<div class="hero-content">
+<h1 class="hero-title">Primavera/Verão 2025</h1>
+<p class="hero-subtitle">Nova Coleção</p>
+</div>
+<div class="hero-scroll" onclick="document.querySelector('.collection-section').scrollIntoView({behavior:'smooth'})">
+<span>Descobrir</span>
+<div class="scroll-line"></div>
+</div>
+</section>
+
+<!-- Collection Grid -->
+<section class="collection-section">
+<div class="section-header">
+<h2 class="section-title">Lookbook 2025</h2>
+<p class="section-description">Uma jornada através das cores e formas que definem a nova estação. Cada peça conta uma história de elegância atemporal e design contemporâneo.</p>
 </div>
 
-<!-- Buttons -->
-<button class="action-btn btn-home" onclick="goHome()">
-  <i class="fas fa-home"></i>
+<div class="lookbook-grid">
+<div class="lookbook-item large">
+<img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1600&h=900&fit=crop" alt="Editorial 1" class="lookbook-img">
+<div class="lookbook-overlay">
+<div class="lookbook-details">
+<div class="lookbook-season">Primavera/Verão 2025</div>
+<h3 class="lookbook-title">Essentials</h3>
+<p class="lookbook-description">Peças fundamentais que transcendem tendências, criadas para durar além das estações.</p>
+<div class="lookbook-tags">
+<span class="lookbook-tag">Minimalista</span>
+<span class="lookbook-tag">Atemporal</span>
+</div>
+<button class="btn-view-collection" onclick="window.location.href='produtos.html'">Ver Coleção</button>
+</div>
+</div>
+</div>
+
+<div class="lookbook-item">
+<img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1200&fit=crop" alt="Look 2" class="lookbook-img">
+<div class="lookbook-overlay">
+<div class="lookbook-details">
+<div class="lookbook-season">PV 2025</div>
+<h3 class="lookbook-title">Urban</h3>
+<p class="lookbook-description">Conforto urbano encontra sofisticação.</p>
+<button class="btn-view-collection" onclick="window.location.href='produtos.html'">Ver Coleção</button>
+</div>
+</div>
+</div>
+
+<div class="lookbook-item">
+<img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&h=1200&fit=crop" alt="Look 3" class="lookbook-img">
+<div class="lookbook-overlay">
+<div class="lookbook-details">
+<div class="lookbook-season">PV 2025</div>
+<h3 class="lookbook-title">Studio</h3>
+<p class="lookbook-description">Design pensado para o dia a dia criativo.</p>
+<button class="btn-view-collection" onclick="window.location.href='produtos.html'">Ver Coleção</button>
+</div>
+</div>
+</div>
+
+<div class="lookbook-item">
+<img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=1200&fit=crop" alt="Look 4" class="lookbook-img">
+<div class="lookbook-overlay">
+<div class="lookbook-details">
+<div class="lookbook-season">PV 2025</div>
+<h3 class="lookbook-title">Neutral</h3>
+<p class="lookbook-description">Paleta neutra, impacto máximo.</p>
+<button class="btn-view-collection" onclick="window.location.href='produtos.html'">Ver Coleção</button>
+</div>
+</div>
+</div>
+
+<div class="lookbook-item">
+<img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=1200&fit=crop" alt="Look 5" class="lookbook-img">
+<div class="lookbook-overlay">
+<div class="lookbook-details">
+<div class="lookbook-season">PV 2025</div>
+<h3 class="lookbook-title">Statement</h3>
+<p class="lookbook-description">Peças que fazem a diferença.</p>
+<button class="btn-view-collection" onclick="window.location.href='produtos.html'">Ver Coleção</button>
+</div>
+</div>
+</div>
+
+<div class="lookbook-item large">
+<img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600&h=900&fit=crop" alt="Editorial 2" class="lookbook-img">
+<div class="lookbook-overlay">
+<div class="lookbook-details">
+<div class="lookbook-season">Campanha 2025</div>
+<h3 class="lookbook-title">The New Collection</h3>
+<p class="lookbook-description">Explorando os limites entre funcionalidade e expressão pessoal.</p>
+<div class="lookbook-tags">
+<span class="lookbook-tag">Contemporary</span>
+<span class="lookbook-tag">Refined</span>
+</div>
+<button class="btn-view-collection" onclick="window.location.href='produtos.html'">Ver Coleção</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Editorial Section -->
+<section class="editorial-section">
+<div class="editorial-content">
+<div class="editorial-text">
+<div class="editorial-label">Nossa Filosofia</div>
+<h2 class="editorial-title">Design Que Respeita o Tempo</h2>
+<p class="editorial-description">Cada peça é cuidadosamente desenvolvida para transcender as tendências passageiras. Acreditamos em criar roupas que se tornam parte da sua história, evoluindo com você através das estações.</p>
+<p class="editorial-description">Nosso compromisso é com a qualidade excepcional, materiais sustentáveis e um design atemporal que celebra a individualidade.</p>
+<div class="editorial-stats">
+<div class="stat-item">
+<div class="stat-number">48</div>
+<div class="stat-label">Peças Únicas</div>
+</div>
+<div class="stat-item">
+<div class="stat-number">12</div>
+<div class="stat-label">Paletas</div>
+</div>
+<div class="stat-item">
+<div class="stat-number">100%</div>
+<div class="stat-label">Sustentável</div>
+</div>
+</div>
+</div>
+<img src="https://images.unsplash.com/photo-1558769132-cb1aea3c862b?w=800&h=1200&fit=crop" alt="Editorial" class="editorial-image">
+</div>
+</section>
+
+<!-- Behind the Scenes -->
+<section class="bts-section">
+<div class="section-header">
+<h2 class="section-title">Nos Bastidores</h2>
+<p class="section-description">Um olhar exclusivo sobre o processo criativo por trás da coleção.</p>
+</div>
+<div class="bts-grid">
+<div class="bts-item">
+<img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=800&fit=crop" alt="BTS 1" class="bts-image">
+<div class="bts-info">
+<h4 class="bts-title">O Processo</h4>
+<p class="bts-text">Desde o conceito inicial até a peça final, cada detalhe é considerado com cuidado e intenção.</p>
+</div>
+</div>
+<div class="bts-item">
+<img src="https://images.unsplash.com/photo-1558769132-92e717d613cd?w=600&h=800&fit=crop" alt="BTS 2" class="bts-image">
+<div class="bts-info">
+<h4 class="bts-title">Materiais</h4>
+<p class="bts-text">Selecionamos apenas tecidos de origem responsável, priorizando qualidade e sustentabilidade.</p>
+</div>
+</div>
+<div class="bts-item">
+<img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop" alt="BTS 3" class="bts-image">
+<div class="bts-info">
+<h4 class="bts-title">Artesanato</h4>
+<p class="bts-text">Cada peça é produzida com técnicas tradicionais aliadas à inovação contemporânea.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Video Section -->
+<section class="video-section">
+<div class="video-container">
+<h2 class="video-title">Campanha Primavera/Verão 2025</h2>
+<p class="video-subtitle">Assista ao filme completo</p>
+<div class="video-wrapper" onclick="alert('Vídeo em breve!')">
+<img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1600&h=900&fit=crop" alt="Video" class="video-placeholder">
+<div class="video-play-btn">
+<i class="fas fa-play" style="margin-left:4px"></i>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Action Buttons -->
+<button class="action-btn btn-home" onclick="goHome()" title="Home">
+<i class="fas fa-home"></i>
+</button>
+<button class="action-btn btn-cart" onclick="goToProducts()" title="Produtos">
+<i class="fas fa-shopping-bag"></i>
+</button>
+<button class="action-btn btn-download" onclick="openDownloadModal()" title="Download Lookbook">
+<i class="fas fa-download"></i>
 </button>
 
-<button class="action-btn btn-cart" onclick="goToProducts()">
-  <i class="fas fa-shopping-bag"></i>
-</button>
+<!-- Download Modal -->
+<div class="modal" id="downloadModal">
+<div class="modal-box">
+<div class="modal-header">
+<h3 class="modal-title">Download Lookbook</h3>
+<button class="modal-close" onclick="closeDownloadModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-content">
+<div class="download-options">
+<div class="download-option">
+<div class="download-info">
+<div class="download-icon">
+<i class="fas fa-file-pdf"></i>
+</div>
+<div class="download-text">
+<h4>Lookbook Completo</h4>
+<p>PDF • 25 MB • 48 páginas</p>
+</div>
+</div>
+<button class="download-btn" onclick="downloadFile('lookbook-completo.pdf')">Download</button>
+</div>
+<div class="download-option">
+<div class="download-info">
+<div class="download-icon">
+<i class="fas fa-file-pdf"></i>
+</div>
+<div class="download-text">
+<h4>Catálogo de Produtos</h4>
+<p>PDF • 12 MB • 24 páginas</p>
+</div>
+</div>
+<button class="download-btn" onclick="downloadFile('catalogo-produtos.pdf')">Download</button>
+</div>
+<div class="download-option">
+<div class="download-info">
+<div class="download-icon">
+<i class="fas fa-file-pdf"></i>
+</div>
+<div class="download-text">
+<h4>Guia de Estilo</h4>
+<p>PDF • 8 MB • 16 páginas</p>
+</div>
+</div>
+<button class="download-btn" onclick="downloadFile('guia-estilo.pdf')">Download</button>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-<button class="action-btn btn-download" onclick="downloadPDF()">
-  <i class="fas fa-download"></i>
-</button>
-
-<!-- Toast -->
+<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
+<script>
+function goHome(){
+window.location.href='home.html';
+}
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, updateDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+function goToProducts(){
+window.location.href='produtos.html';
+}
 
-const app = initializeApp({
-  apiKey:"AIzaSyCLJ5jo4JknJAe9OlH10EawYEvqjJGnvKg",
-  authDomain:"myfrancashop.firebaseapp.com",
-  projectId:"myfrancashop",
-  storageBucket:"myfrancashop.firebasestorage.app",
-  messagingSenderId:"935759870053",
-  appId:"1:935759870053:web:aabe4af138691d021bee8c"
-});
+function openDownloadModal(){
+document.getElementById('downloadModal').classList.add('active');
+}
 
-const db = getFirestore(app);
+function closeDownloadModal(){
+document.getElementById('downloadModal').classList.remove('active');
+}
 
-// Suas imagens — todas começam com likes 0
-const lookbookImages = [
-  {id:'1',type:'half',image:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800',title:'Look Elegante'},
-  {id:'2',type:'half',image:'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800',title:'Estilo Casual'},
-  {id:'3',type:'full',image:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600',title:'Coleção Verão'},
-  {id:'4',type:'third',image:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600',title:'Acessórios'},
-  {id:'5',type:'third',image:'https://images.unsplash.com/photo-1467043237213-65f2da53396f?w=600',title:'Minimalista'},
-  {id:'6',type:'third',image:'https://images.unsplash.com/photo-1445205170230-053b83016050?w=600',title:'Street Style'},
-  {id:'7',type:'half',image:'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800',title:'Noite Especial'},
-  {id:'8',type:'half',image:'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800',title:'Boho Chic'},
-  {id:'9',type:'full',image:'https://images.unsplash.com/photo-1558769132-cb1aea841c87?w=1600',title:'Editorial Fashion'},
-  {id:'10',type:'third',image:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600',title:'Cores Vibrantes'},
-  {id:'11',type:'third',image:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600',title:'Clássico'},
-  {id:'12',type:'third',image:'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600',title:'Tendências'},
-];
-
-// Toast
 function showToast(message){
-  const c = document.getElementById("toastContainer");
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.innerHTML = `
-    <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
-    <div>
-      <div class="toast-title">Sucesso</div>
-      <div class="toast-message">${message}</div>
-    </div>
-    <button class="toast-close" onclick="this.parentElement.remove()">
-      <i class="fas fa-times"></i>
-    </button>
-  `;
-  c.appendChild(t);
-  setTimeout(()=>{ t.classList.add("removing"); setTimeout(()=>t.remove(),300); },2000);
+const container=document.getElementById('toastContainer');
+const toast=document.createElement('div');
+toast.className='toast';
+toast.innerHTML=`
+<div class="toast-icon">
+<i class="fas fa-circle-check"></i>
+</div>
+<div class="toast-content">
+<div class="toast-title">Sucesso</div>
+<div class="toast-message">${message}</div>
+</div>
+<button class="toast-close" onclick="this.parentElement.remove()">
+<i class="fas fa-times"></i>
+</button>
+`;
+container.appendChild(toast);
+setTimeout(()=>{
+toast.classList.add('removing');
+setTimeout(()=>toast.remove(),300);
+},3000);
 }
 
-// Buttons
-window.goHome = () => location.href = "home.html";
-window.goToProducts = () => location.href = "produtos.html";
-window.downloadPDF = () => {
-  window.location.href = "meu_catalogo.pdf"; // substitua pelo arquivo real
-};
-
-// Firestore Like
-async function toggleLike(id){
-  const btn = document.querySelector(`[data-like="${id}"]`);
-  btn.classList.toggle("liked");
-
-  const ref = doc(db, "lookbook", id);
-  await updateDoc(ref, { likes: increment(1) });
-
-  showToast("Curtido!");
+function downloadFile(filename){
+showToast(`Download de ${filename} iniciado!`);
+closeDownloadModal();
+// Aqui você implementaria o download real do PDF
+// Por exemplo: window.open('/downloads/' + filename, '_blank');
 }
 
-window.toggleLike = toggleLike;
-
-
-// Renderização
-function renderLookbook(){
-  const grid = document.getElementById("lookbookGrid");
-
-  grid.innerHTML = lookbookImages.map(img => `
-    <div class="lookbook-item type-${img.type}">
-      <img src="${img.image}" class="lookbook-img" loading="lazy"
-           onload="this.classList.add('loaded')">
-
-      <button class="like-btn" onclick="toggleLike('${img.id}')" data-like="${img.id}">
-        <i class="fas fa-heart"></i>
-      </button>
-
-      <div class="lookbook-title-fixed">${img.title}</div>
-    </div>
-  `).join("");
+// Close modal on outside click
+window.onclick=function(event){
+const modal=document.getElementById('downloadModal');
+if(event.target===modal){
+closeDownloadModal();
 }
-
-renderLookbook();
+}
 </script>
-
 </body>
 </html>
